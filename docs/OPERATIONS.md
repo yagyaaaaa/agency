@@ -16,6 +16,19 @@ Everything before 2 PM is automation prep. Everything after 5:30 PM is automatio
 | 20:00 | `job_evening_content_report` | Profit + content + tool recap |
 | 21:30 | `job_final_daily_summary` | End-of-day status |
 
+## How Daily Research Works
+
+1. Targets live in `configs/research_targets.yaml`.
+2. The Lead Research Agent expands niches and cities into search pairs.
+3. Pair selection uses round-robin with a rolling 7-day India/foreign split.
+4. Default split is 80 percent India and 20 percent Dubai/foreign.
+5. `global_daily_cap` limits accepted leads per run.
+6. `MAX_RESEARCH_QUERIES_PER_DAY` limits provider calls per day.
+7. SerpAPI Google Maps is tried first when `SERPAPI_API_KEY` exists.
+8. Apify is tried as fallback when `APIFY_API_TOKEN` exists.
+9. `RESEARCH_DRY_RUN=1` uses `data/seed/research_fixtures.json` and no network.
+10. Every accepted candidate goes through `src.crm.leads.upsert_lead()` for dedupe and suppression.
+
 ## What the founder does between 2 PM and 5:30 PM
 
 1. Open Telegram → today's Excel files.

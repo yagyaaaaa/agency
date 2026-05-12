@@ -57,10 +57,11 @@ class BaseAgent:
         else:
             self.logger.info("agent run finished")
             if job_log_id is not None:
+                message = str(getattr(self, "_job_log_message", "completed"))[:1000]
                 with db.cursor() as cur:
                     cur.execute(
                         "UPDATE job_log SET finished_at = ?, status = ?, message = ? WHERE job_log_id = ?",
-                        (datetime.utcnow().isoformat(timespec="seconds"), "ok", "completed", job_log_id),
+                        (datetime.utcnow().isoformat(timespec="seconds"), "ok", message, job_log_id),
                     )
 
 
