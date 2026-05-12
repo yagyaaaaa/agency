@@ -1,0 +1,64 @@
+{
+  "businesses": [
+    {
+      "business_name": "Asterline Architects",
+      "industry": "architects",
+      "city_country": "Pune, India",
+      "website": "https://asterline-architects.example",
+      "email": "hello@asterline-architects.example",
+      "phone": "+91 90000 10001",
+      "source_url": "https://www.google.com/maps/search/asterline+architects+pune",
+      "website_quality_score": 4,
+      "automation_opportunity": "Project enquiries can be routed into WhatsApp and a simple CRM follow-up board.",
+      "personalization_hook": "Their residential portfolio is strong, but the project pages can push visitors into an enquiry flow faster."
+    },
+    {
+      "business_name": "CasaGrid Interiors",
+      "industry": "interior_designers",
+      "city_country": "Mumbai, India",
+      "website": "https://casagrid-interiors.example",
+      "email": "studio@casagrid-interiors.example",
+      "phone": "+91 90000 10002",
+      "source_url": "https://www.google.com/maps/search/casagrid+interiors+mumbai",
+      "website_quality_score": 5,
+      "automation_opportunity": "Consultation requests can sync into Google Sheets with same-day follow-up reminders.",
+      "personalization_hook": "The visual work is premium, but mobile visitors need a clearer consultation CTA near the portfolio."
+    },
+    {
+      "business_name": "NoEmail Dental Studio",
+      "industry": "clinics",
+      "city_country": "Bengaluru, India",
+      "website": "https://noemail-dental.example",
+      "email": "",
+      "phone": "+91 90000 10003",
+      "source_url": "https://www.google.com/maps/search/noemail+dental+bengaluru",
+      "website_quality_score": 3,
+      "automation_opportunity": "Booking intent can be captured through a stronger WhatsApp appointment flow.",
+      "personalization_hook": "The clinic has clear service demand, but the appointment path could be reduced to one mobile action."
+    },
+    {
+      "business_name": "Suppressed Fitness Lab",
+      "industry": "gyms_fitness_coaches",
+      "city_country": "Mumbai, India",
+      "website": "https://suppressed-fitness.example",
+      "email": "owner@suppressed-fitness.example",
+      "phone": "+91 90000 10004",
+      "source_url": "https://www.google.com/maps/search/suppressed+fitness+mumbai",
+      "website_quality_score": 4,
+      "automation_opportunity": "Trial enquiries can be followed up automatically.",
+      "personalization_hook": "Trial intent is visible, but the site can capture and remind prospects faster."
+    },
+    {
+      "business_name": "Palm District Builders",
+      "industry": "builders",
+      "city_country": "Dubai, UAE",
+      "website": "https://palm-district-builders.example",
+      "email": "sales@palm-district-builders.example",
+      "phone": "+971 50 000 1005",
+      "source_url": "https://www.google.com/maps/search/palm+district+builders+dubai",
+      "website_quality_score": 4,
+      "automation_opportunity": "Buyer enquiries can move into a CRM with project status and automated follow-up.",
+      "personalization_hook": "The project positioning is high-ticket, but enquiry capture and proof sections can be made stronger for Dubai buyers."
+    }
+  ]
+}

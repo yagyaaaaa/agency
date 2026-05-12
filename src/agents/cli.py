@@ -35,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--date", help="ISO date override, e.g. 2026-05-12")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    lead = sub.add_parser("lead-research")
+    lead = sub.add_parser("lead-research", aliases=["lead_research"])
     lead.add_argument("--input", help="CSV of approved researched leads to import/score")
     lead.add_argument("--india-limit", type=int, default=35)
     lead.add_argument("--foreign-limit", type=int, default=10)
@@ -62,7 +62,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     dry_run = bool(args.dry_run)
     day = args.date
 
-    if args.command == "lead-research":
+    if args.command in {"lead-research", "lead_research"}:
         result = LeadResearchAgent().run(dry_run=dry_run, input_path=args.input, india_limit=args.india_limit, foreign_limit=args.foreign_limit, day=day)
         _print_result(result)
         return 0

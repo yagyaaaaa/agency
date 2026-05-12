@@ -32,3 +32,21 @@ def ensure_agent_schema() -> None:
         for name, col_type in TOOL_RESEARCH_COLUMNS.items():
             if name not in existing:
                 cur.execute(f"ALTER TABLE tool_research ADD COLUMN {name} {col_type}")
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS research_query_usage (
+                usage_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                run_date TEXT NOT NULL,
+                niche_id TEXT,
+                city TEXT,
+                market TEXT,
+                query TEXT,
+                provider TEXT,
+                candidates_returned INTEGER DEFAULT 0,
+                cost_estimate REAL DEFAULT 0,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_research_usage_date ON research_query_usage(run_date)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_research_usage_market ON research_query_usage(market, run_date)")

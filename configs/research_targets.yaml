@@ -1,0 +1,28 @@
+niches:
+  - id: architects
+    cities: [Pune, Mumbai, Bengaluru, Delhi, Hyderabad]
+    daily_quota: 8
+  - id: interior_designers
+    cities: [Mumbai, Bengaluru, Gurgaon]
+    daily_quota: 6
+  - id: builders
+    cities: [Dubai, Abu Dhabi]
+    daily_quota: 4
+  - id: clinics
+    cities: [Mumbai, Pune, Bengaluru, Dubai]
+    daily_quota: 5
+  - id: gyms_fitness_coaches
+    cities: [Mumbai, Pune, Delhi]
+    daily_quota: 3
+  - id: coaching_institutes
+    cities: [Mumbai, Pune, Hyderabad]
+    daily_quota: 2
+  - id: premium_local_businesses
+    cities: [Mumbai, Bengaluru]
+    daily_quota: 2
+
+market_split:
+  india_share_pct: 80
+  foreign_share_pct: 20
+
+global_daily_cap: 30

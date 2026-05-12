@@ -8,7 +8,13 @@ Coordinate all agent outputs. Read daily CRM, outreach, follow-up, content, tool
 
 ## Lead Research Agent
 
-Find or ingest potential service-business leads. Prioritize architects, interior designers, builders, clinics, gyms, coaching institutes, premium local businesses, and Dubai/foreign service businesses. Score each lead, write clear personalization hooks, recommend package, dedupe against the CRM, write through the approved SQLite interface, and export Excel.
+Inputs: `configs/research_targets.yaml`, provider keys from environment variables, daily query budget, and optional dry-run fixtures from `data/seed/research_fixtures.json`.
+
+Contract: pick niche/city pairs with a 7-day rolling India/foreign split, query SerpAPI Google Maps first and Apify second when configured, normalize candidates into CRM lead fields, score each row, recommend a package, and call `src.crm.leads.upsert_lead()`.
+
+Outputs: scored leads in SQLite, `leads_today` Excel export, and `data/logs/lead_research_YYYY-MM-DD.log` with query counts, cost estimate, and inserted/updated/skipped/suppressed counts.
+
+Side effects: writes only to the existing leads table, research query usage counter, job log, Excel export, and lead research log. It never sends outreach and never reads secrets from files.
 
 ## Cold Email Agent
 
