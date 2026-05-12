@@ -1,0 +1,22 @@
+Subject: Quick idea for {{business_name}}
+
+Hi {{first_name}},
+
+I came across {{business_name}} while looking at {{industry}} businesses in {{city_country}}.
+
+Your work seems strong, but your website could probably do more of the heavy lifting: clearer project presentation, stronger trust signals, faster enquiry flow, and automated follow-up after someone shows interest.
+
+I run QuantumReach. We build premium websites and lightweight AI automations for service businesses — websites, WhatsApp lead capture, Google Sheets/CRM sync, and simple follow-up systems.
+
+One specific idea for your site:
+{{personalized_observation}}
+
+Worth sending you a quick 2–3 point teardown?
+
+Best,
+Yagya
+QuantumReach
+connect@quantumreach.tech
+quantumreach.tech
+
+Reply "no" and I won't follow up.

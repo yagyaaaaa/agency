@@ -1,0 +1,23 @@
+primary_niches:
+  - architects
+  - interior_designers
+  - builders
+  - clinics
+  - gyms_fitness_coaches
+  - coaching_institutes
+  - premium_local_businesses
+  - dubai_foreign_service_businesses
+
+market_split_first_14_days:
+  india_pct: 80
+  foreign_pct: 20
+
+niche_hooks:
+  architects: "Your portfolio is strong but the site doesn't guide a project enquiry — let's fix the path from project gallery to enquiry."
+  interior_designers: "Your visuals deserve a premium frame. We can add an enquiry-first hero and auto-followup."
+  builders: "Buyers want trust signals fast — site needs project status, gallery, and WhatsApp enquiry capture."
+  clinics: "Patients want booking in two taps — WhatsApp/booking flow + reminders cuts no-shows."
+  gyms_fitness_coaches: "Lead capture for trials + automated follow-up is the highest-ROI fix."
+  coaching_institutes: "Demo class signup + reminder automation drives conversion."
+  premium_local_businesses: "Site should feel premium and convert local search into enquiries."
+  dubai_foreign_service_businesses: "Trust + speed + WhatsApp/email capture; localized to Dubai market."

@@ -1,0 +1,59 @@
+currency_default: INR
+
+india:
+  starter:
+    one_time: 14999
+    monthly_support: 3499
+    description: >
+      Premium single-page or 3-page website with WhatsApp click, enquiry form,
+      Google Analytics, and basic SEO. For small/easy clients only.
+    use_when:
+      - very small business
+      - tight budget
+      - low automation need
+    do_not_lead_with: true
+
+  pro:
+    one_time: 34999
+    monthly_support: 5999
+    description: >
+      Premium multi-page website + WhatsApp lead capture + Google Sheets/CRM sync
+      + 1 automation (e.g. auto follow-up DMs or appointment reminders).
+    use_when:
+      - default recommendation
+      - service business with active enquiry flow
+      - architects, designers, clinics, gyms, coaching institutes
+
+  enterprise:
+    one_time: 79999
+    monthly_support: 9999
+    description: >
+      Full AI growth infrastructure — premium site, CRM, multi-channel automation,
+      analytics dashboard, monthly content support, AI lead qualifier.
+    use_when:
+      - high-ticket businesses
+      - strong existing lead potential
+      - builders, premium clinics, multi-location gyms
+
+foreign:
+  launch_website:
+    usd_min: 499
+    usd_max: 799
+    description: Launch-grade premium website with one CTA flow.
+
+  growth_website_automation:
+    usd_min: 1200
+    usd_max: 2500
+    description: Premium website + WhatsApp/lead automation + Sheet/CRM sync.
+
+  ai_growth_infrastructure:
+    usd_min: 3000
+    usd_max: 7500
+    description: Full AI growth stack — site, CRM, automations, analytics, retainer.
+
+payment_terms_default:
+  advance_pct: 50
+  before_launch_pct: 50
+  support_starts: after_launch
+  add_ons: billed_separately
+  taxes_note: "Prices exclude GST where applicable."

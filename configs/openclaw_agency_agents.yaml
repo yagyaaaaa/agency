@@ -1,0 +1,319 @@
+version: 1
+system_name: quantumreach_agency_os
+runtime_target: jarvis
+
+global_security_defaults:
+  principle: least_privilege
+  public_exposure: forbidden_without_auth
+  secrets_source: environment_variables_only
+  secrets_file_access: denied
+  email_mode: manual_approval_only
+  direct_email_send: denied
+  destructive_shell_commands: denied
+  arbitrary_community_skill_install: denied
+  filesystem_write_roots:
+    - /app/data
+    - /app/data/logs
+  filesystem_read_roots:
+    - /app/data
+    - /app/configs
+    - /app/docs
+  blocked_paths:
+    - /root/.ssh
+    - /home/*/.ssh
+    - /app/.env
+    - /app/secrets
+  notes:
+    - Alfred VPS is out of scope.
+    - Jarvis runs OpenClaw and agency automation containers.
+    - Agents draft, score, summarize, and export. Founder approves final outreach.
+
+agents:
+  - name: CEO Control Agent
+    module: src.agents.ceo_control.CEOControlAgent
+    role: Coordinates agent outputs, creates founder-ready daily summary, flags hot leads, risks, blocked tasks, and revenue opportunities.
+    allowed_tools:
+      - sqlite_read
+      - telegram_digest_via_existing_module
+      - filesystem_read_data
+      - filesystem_write_logs
+    denied_tools:
+      - browser
+      - shell
+      - email_send
+      - secrets_read
+      - destructive_filesystem
+    data_access_paths:
+      read:
+        - /app/data/db/agency.sqlite
+        - /app/data/excel
+        - /app/data/content
+        - /app/data/tool-research
+        - /app/data/profit
+      write:
+        - /app/data/logs
+        - /app/data/db/agency.sqlite
+    schedule_hooks:
+      - "13:30 daily_brief"
+      - "21:30 final_daily_summary"
+    output_paths:
+      - /app/data/logs/agents_ceo_control_agent.log
+      - /app/data/db/agency.sqlite:daily_reports
+    escalation_rules:
+      - Alert founder if hot prospects >= 3.
+      - Alert founder if Telegram module is missing.
+      - Alert founder if any agent run fails.
+
+  - name: Lead Research Agent
+    module: src.agents.lead_research.LeadResearchAgent
+    role: Finds or ingests potential leads, scores them, creates personalization hooks, recommends packages, writes approved rows to SQLite, and exports Excel.
+    allowed_tools:
+      - browser
+      - sqlite_read
+      - sqlite_write_leads_only
+      - excel_export
+      - filesystem_read_configs
+      - filesystem_write_data
+      - filesystem_write_logs
+    denied_tools:
+      - email_send
+      - secrets_read
+      - unrestricted_shell
+      - destructive_filesystem
+      - arbitrary_install
+    data_access_paths:
+      read:
+        - /app/configs/niches.yaml
+        - /app/configs/packages.yaml
+        - /app/data/seed
+      write:
+        - /app/data/db/agency.sqlite:leads
+        - /app/data/excel/leads_today.xlsx
+        - /app/data/reports
+        - /app/data/logs
+    schedule_hooks:
+      - "10:00 lead_research"
+      - "12:00 scoring_dedupe"
+    output_paths:
+      - /app/data/excel/leads_today.xlsx
+      - /app/data/reports/lead_research_plan_YYYY-MM-DD.md
+    escalation_rules:
+      - Escalate if fewer than 20 viable India leads are available.
+      - Escalate if duplicate rate is above 30 percent.
+      - Escalate if browser/source access fails.
+
+  - name: Cold Email Agent
+    module: src.agents.cold_email.ColdEmailAgent
+    role: Generates 20-30 cold email drafts, follow-up 1, follow-up 2, personalization reason, and Excel export. Never sends email.
+    allowed_tools:
+      - sqlite_read
+      - sqlite_write_outreach_messages_only
+      - excel_export
+      - filesystem_write_logs
+    denied_tools:
+      - browser
+      - email_send
+      - smtp
+      - secrets_read
+      - unrestricted_shell
+      - destructive_filesystem
+    data_access_paths:
+      read:
+        - /app/data/db/agency.sqlite:leads
+        - /app/data/db/agency.sqlite:suppressions
+        - /app/data/db/agency.sqlite:replies
+      write:
+        - /app/data/db/agency.sqlite:outreach_messages
+        - /app/data/excel/cold_email_drafts.xlsx
+        - /app/data/logs
+    schedule_hooks:
+      - "15:00 cold_email_draft_approval_reminder"
+    output_paths:
+      - /app/data/excel/cold_email_drafts.xlsx
+    escalation_rules:
+      - Escalate if fewer than 20 draftable leads exist.
+      - Escalate if any email send tool is requested.
+      - Escalate if suppression checks fail.
+
+  - name: Follow-up Agent
+    module: src.agents.followup.FollowupAgent
+    role: Checks due follow-ups, blocks suppressed/negative/rejected/converted leads, generates due drafts, and exports Excel.
+    allowed_tools:
+      - sqlite_read
+      - sqlite_write_followups_only
+      - excel_export
+      - filesystem_write_logs
+    denied_tools:
+      - browser
+      - email_send
+      - smtp
+      - secrets_read
+      - unrestricted_shell
+      - destructive_filesystem
+    data_access_paths:
+      read:
+        - /app/data/db/agency.sqlite:outreach_messages
+        - /app/data/db/agency.sqlite:leads
+        - /app/data/db/agency.sqlite:suppressions
+        - /app/data/db/agency.sqlite:replies
+      write:
+        - /app/data/db/agency.sqlite:followups
+        - /app/data/excel/followups_due.xlsx
+        - /app/data/logs
+    schedule_hooks:
+      - "17:00 followup_reminder"
+    output_paths:
+      - /app/data/excel/followups_due.xlsx
+    escalation_rules:
+      - Escalate if a lead is both due and suppressed.
+      - Escalate if follow-ups are due but no founder approval status exists.
+
+  - name: Content Agent
+    module: src.agents.content.ContentAgent
+    role: Creates daily founder-led content pack with post, carousel outline, DM variant, case-study post, and teardown idea.
+    allowed_tools:
+      - filesystem_write_content
+      - sqlite_write_content_assets_only
+      - filesystem_write_logs
+    denied_tools:
+      - browser
+      - secrets_read
+      - email_send
+      - unrestricted_shell
+      - destructive_filesystem
+    data_access_paths:
+      read:
+        - /app/configs
+      write:
+        - /app/data/content/YYYY-MM-DD/content_pack.md
+        - /app/data/db/agency.sqlite:content_assets
+        - /app/data/logs
+    schedule_hooks:
+      - "20:00 content_pack"
+    output_paths:
+      - /app/data/content/YYYY-MM-DD/content_pack.md
+    escalation_rules:
+      - Escalate if content output is empty.
+      - Escalate if tone violates premium/practical/no-fake-guru rule.
+
+  - name: Tool Research Agent
+    module: src.agents.tool_research.ToolResearchAgent
+    role: Researches 3 useful tools or methods daily and stores agency impact notes in Markdown and SQLite.
+    allowed_tools:
+      - browser
+      - sqlite_write_tool_research_only
+      - filesystem_write_tool_research
+      - filesystem_write_logs
+    denied_tools:
+      - secrets_read
+      - email_send
+      - unrestricted_shell
+      - destructive_filesystem
+      - arbitrary_install
+    data_access_paths:
+      read:
+        - /app/configs
+      write:
+        - /app/data/tool-research/YYYY-MM-DD.md
+        - /app/data/db/agency.sqlite:tool_research
+        - /app/data/logs
+    schedule_hooks:
+      - "20:05 tool_research"
+    output_paths:
+      - /app/data/tool-research/YYYY-MM-DD.md
+    escalation_rules:
+      - Escalate if a tool requires untrusted code execution.
+      - Escalate if pricing or availability cannot be verified during live research.
+
+  - name: Proposal Agent
+    module: src.agents.proposal.ProposalAgent
+    role: Uses existing proposal generator when available, otherwise creates a deterministic Markdown proposal from approved CLI or Telegram input.
+    allowed_tools:
+      - sqlite_read
+      - sqlite_write_proposals_only
+      - filesystem_write_proposals
+      - existing_proposal_generator
+      - filesystem_write_logs
+    denied_tools:
+      - browser
+      - email_send
+      - secrets_read
+      - unrestricted_shell
+      - destructive_filesystem
+    data_access_paths:
+      read:
+        - /app/configs/packages.yaml
+        - /app/data/db/agency.sqlite
+      write:
+        - /app/data/proposals
+        - /app/data/db/agency.sqlite:proposals
+        - /app/data/logs
+    schedule_hooks:
+      - "on_demand telegram_or_cli"
+    output_paths:
+      - /app/data/proposals
+    escalation_rules:
+      - Escalate if price, scope, or client name is missing.
+
+  - name: Profit Agent
+    module: src.agents.profit.ProfitAgent
+    role: Summarizes collected revenue, pending payments, commissions, expenses, and estimated net profit.
+    allowed_tools:
+      - sqlite_read
+      - excel_export
+      - filesystem_write_profit
+      - filesystem_write_logs
+    denied_tools:
+      - browser
+      - email_send
+      - secrets_read
+      - unrestricted_shell
+      - destructive_filesystem
+    data_access_paths:
+      read:
+        - /app/data/db/agency.sqlite:revenue
+        - /app/data/db/agency.sqlite:expenses
+        - /app/data/db/agency.sqlite:commissions
+      write:
+        - /app/data/excel/profit_report.xlsx
+        - /app/data/profit
+        - /app/data/logs
+    schedule_hooks:
+      - "20:10 profit_report"
+    output_paths:
+      - /app/data/excel/profit_report.xlsx
+      - /app/data/profit/profit_report_YYYY-MM-DD.md
+    escalation_rules:
+      - Escalate if net profit is negative.
+      - Escalate if pending payments exceed collected revenue.
+
+  - name: Telegram Reporter Agent
+    module: src.agents.telegram_reporter.TelegramReporterAgent
+    role: Formats safe Telegram digests and sends through the existing Telegram bot module without exposing tokens or secrets.
+    allowed_tools:
+      - telegram_digest_via_existing_module
+      - filesystem_read_data_outputs
+    denied_tools:
+      - browser
+      - email_send
+      - secrets_read
+      - unrestricted_shell
+      - destructive_filesystem
+    data_access_paths:
+      read:
+        - /app/data/excel
+        - /app/data/content
+        - /app/data/tool-research
+        - /app/data/profit
+      write:
+        - /app/data/logs
+    schedule_hooks:
+      - "13:30 daily_brief"
+      - "17:00 followup_reminder"
+      - "20:00 content_tool_profit_report"
+      - "21:30 final_daily_summary"
+    output_paths:
+      - telegram_chat:founder
+    escalation_rules:
+      - Strip token-like strings before sending.
+      - Escalate if Telegram send fails.
